@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f5f9">
+  <title>5秒ツール｜会社員の地味な面倒を、すぐ終わらせる</title>
+  <meta name="description" content="日程候補、営業日計算、日報、リスト比較など。AIに頼むほどでもない仕事の小さな面倒を、ログイン不要で素早く片付ける無料ツール集。">
+  <meta property="og:title" content="5秒ツール｜会社員の地味な面倒を、すぐ終わらせる">
+  <meta property="og:description" content="会社員のための、ログイン不要で使える小さな仕事道具。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#mainContent">本文へ移動</a>
+<main class="shell" id="mainContent">
+  <div class="topbar">
+    <div class="brand-wrap" id="brandHome" title="ホームへ">
+      <div class="brand-dot"></div>
+      <div>
+        <div class="brand">5秒ツール</div>
+        <div class="brand-sub">会社員の小さな面倒を、すぐ終わらせる。</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="bookmark-btn" id="bookmarkSite">☆ このサイトをお気に入りに</button>
+      <div class="nav">
+        <button class="active" data-page="home">ホーム</button>
+        <button data-page="schedule">日程候補</button>
+        <button data-page="diff">リスト比較</button>
+        <button data-page="email">宛先整形</button>
+        <button data-page="businessday">営業日</button>
+        <button data-page="transpose">縦横変換</button>
+        <button data-page="dailyreport">日報</button>
+        <button data-page="agenda">会議</button>
+        <button data-page="worktime">勤務時間</button>
+        <button data-page="dedupe">重複削除</button>
+        <button data-page="textbatch">文字加工</button>
+      </div>
+    </div>
+  </div>
+  <!-- HOME -->
+  <section id="home" class="page active">
+    <div class="home-hero">
+      <div class="home-copy">
+        <div class="home-eyebrow">今日は何を、5秒で終わらせますか？</div>
+        <h1>探すより、<br>ここで終わらせる。</h1>
+        <p>説明を読まなくても使える、会社員向けの小さな仕事道具です。</p>
+      </div>
+
+      <div class="search-panel">
+        <div class="search-label">やりたいことから探す</div>
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input id="toolSearch" type="search" placeholder="例：日程、営業日、メール、リスト…" autocomplete="off">
+          <button id="clearSearch" class="clear-search" aria-label="検索をクリア">×</button>
+        </div>
+        <div class="quick-words">
+          <button data-query="日程">日程を送りたい</button>
+          <button data-query="営業日">締切を知りたい</button>
+          <button data-query="メール">宛先を整えたい</button>
+          <button data-query="リスト">一覧を比べたい</button>
+          <button data-query="縦横">Excel用に整えたい</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="personal-area" id="favoritesArea" hidden>
+      <div class="section-title-row">
+        <div>
+          <div class="section-kicker">MY TOOLS</div>
+          <h2>お気に入り</h2>
+        </div>
+        <span class="section-note">よく使うものを、ここに固定できます。</span>
+      </div>
+      <div class="compact-tools" id="favoritesList"></div>
+    </section>
+
+    <section class="personal-area" id="recentArea" hidden>
+      <div class="section-title-row">
+        <div>
+          <div class="section-kicker">RECENT</div>
+          <h2>最近使ったツール</h2>
+        </div>
+      </div>
+      <div class="compact-tools" id="recentList"></div>
+    </section>
+
+    <section class="all-tools-section">
+      <div class="section-title-row">
+        <div>
+          <div class="section-kicker">TOOLS</div>
+          <h2>仕事を、すぐ終わらせる。</h2>
+        </div>
+        <span class="section-note" id="toolCountLabel">10個のツール</span>
+      </div>
+
+      <div class="tool-grid" id="toolGrid">
+        <article class="tool-card tool-card-featured" data-open="schedule" role="button" tabindex="0"
+          data-search="日程 予定 カレンダー メール 候補 調整 会議 アポイント">
+          <button class="favorite-star" data-favorite="schedule" aria-label="日程候補をお気に入り">☆</button>
+          <div class="tool-icon-box icon-blue">▦</div>
+          <div class="tool-copy">
+            <div class="tool-meta">予定を決める · 約5秒</div>
+            <h3>日程候補メーカー</h3>
+            <p>空いている時間をドラッグ。<strong>曜日・日付・時間入りのメール文</strong>に変わります。</p>
+            <div class="flow-line"><span>カレンダーで選ぶ</span><b>→</b><span>文章をコピー</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="businessday" role="button" tabindex="0"
+          data-search="営業日 日付 締切 期限 3営業日後 5営業日前 土日">
+          <button class="favorite-star" data-favorite="businessday" aria-label="営業日計算をお気に入り">☆</button>
+          <div class="tool-icon-box icon-green">17</div>
+          <div class="tool-copy">
+            <div class="tool-meta">締切を確認 · 約3秒</div>
+            <h3>営業日計算</h3>
+            <p>「3営業日後」が<strong>何月何日か</strong>をすぐ確認。</p>
+            <div class="flow-line"><span>日付＋日数</span><b>→</b><span>営業日を表示</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="diff" role="button" tabindex="0"
+          data-search="リスト 比較 差分 一覧 名簿 店舗 社員 追加 削除">
+          <button class="favorite-star" data-favorite="diff" aria-label="リスト比較をお気に入り">☆</button>
+          <div class="tool-icon-box icon-orange">≠</div>
+          <div class="tool-copy">
+            <div class="tool-meta">一覧を確認 · 約5秒</div>
+            <h3>リスト比較</h3>
+            <p>2つの一覧を貼るだけ。<strong>増えた・消えた・共通</strong>を色分け。</p>
+            <div class="flow-line"><span>AとBを貼る</span><b>→</b><span>差分を確認</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="email" role="button" tabindex="0"
+          data-search="メール 宛先 アドレス Outlook Gmail セミコロン カンマ 一斉送信">
+          <button class="favorite-star" data-favorite="email" aria-label="メール宛先整形をお気に入り">☆</button>
+          <div class="tool-icon-box icon-violet">@</div>
+          <div class="tool-copy">
+            <div class="tool-meta">メールを送る · 約3秒</div>
+            <h3>メール宛先整形</h3>
+            <p>縦に並んだアドレスを<strong>Outlook / Gmailに貼れる形</strong>へ。</p>
+            <div class="flow-line"><span>縦に貼る</span><b>→</b><span>; / , に変換</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="transpose" role="button" tabindex="0"
+          data-search="縦横 変換 Excel エクセル タブ カンマ 行 列 コピペ">
+          <button class="favorite-star" data-favorite="transpose" aria-label="縦横変換をお気に入り">☆</button>
+          <div class="tool-icon-box icon-cyan">↔</div>
+          <div class="tool-copy">
+            <div class="tool-meta">Excel前の整形 · 約3秒</div>
+            <h3>縦横変換</h3>
+            <p>縦リストを横へ、横リストを縦へ。<strong>コピペ前の一手間</strong>を消します。</p>
+            <div class="flow-line"><span>一覧を貼る</span><b>→</b><span>向きを変換</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="dailyreport" role="button" tabindex="0"
+          data-search="日報 業務報告 報告 今日 やったこと 進捗 課題 明日">
+          <button class="favorite-star" data-favorite="dailyreport" aria-label="日報メーカーをお気に入り">☆</button>
+          <div class="tool-icon-box icon-violet">日</div>
+          <div class="tool-copy">
+            <div class="tool-meta">日報を出す · 約30秒</div>
+            <h3>日報メーカー</h3>
+            <p>今日やったことを入れるだけ。<strong>そのまま提出できる日報</strong>に整えます。</p>
+            <div class="flow-line"><span>内容を入力</span><b>→</b><span>日報をコピー</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="agenda" role="button" tabindex="0"
+          data-search="会議 アジェンダ 議題 時間配分 ミーティング 進行 タイムテーブル">
+          <button class="favorite-star" data-favorite="agenda" aria-label="会議アジェンダメーカーをお気に入り">☆</button>
+          <div class="tool-icon-box icon-blue">議</div>
+          <div class="tool-copy">
+            <div class="tool-meta">会議を始める · 約10秒</div>
+            <h3>会議アジェンダメーカー</h3>
+            <p>会議時間と議題を入れるだけ。<strong>時間配分つきの進行表</strong>を作ります。</p>
+            <div class="flow-line"><span>時間＋議題</span><b>→</b><span>アジェンダ完成</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="worktime" role="button" tabindex="0"
+          data-search="勤務時間 実働 残業 出勤 退勤 休憩 時間計算">
+          <button class="favorite-star" data-favorite="worktime" aria-label="勤務時間計算をお気に入り">☆</button>
+          <div class="tool-icon-box icon-green">時</div>
+          <div class="tool-copy">
+            <div class="tool-meta">勤務時間を確認 · 約5秒</div>
+            <h3>勤務時間・残業計算</h3>
+            <p>出勤・退勤・休憩から、<strong>実働時間と残業時間</strong>をすぐ計算。</p>
+            <div class="flow-line"><span>時刻を入力</span><b>→</b><span>実働・残業</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="dedupe" role="button" tabindex="0"
+          data-search="重複 削除 並び替え リスト 一覧 五十音順 昇順 降順">
+          <button class="favorite-star" data-favorite="dedupe" aria-label="重複削除・並び替えをお気に入り">☆</button>
+          <div class="tool-icon-box icon-orange">整</div>
+          <div class="tool-copy">
+            <div class="tool-meta">一覧を整える · 約5秒</div>
+            <h3>重複削除・並び替え</h3>
+            <p>同じ項目を消して、<strong>元の順・昇順・降順</strong>に並べ直します。</p>
+            <div class="flow-line"><span>一覧を貼る</span><b>→</b><span>整理済みリスト</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+
+        <article class="tool-card" data-open="textbatch" role="button" tabindex="0"
+          data-search="一括 文字 加工 様 敬称 連番 前 後ろ 追加 全角 半角">
+          <button class="favorite-star" data-favorite="textbatch" aria-label="一括文字加工をお気に入り">☆</button>
+          <div class="tool-icon-box icon-cyan">Aa</div>
+          <div class="tool-copy">
+            <div class="tool-meta">文字列を整える · 約5秒</div>
+            <h3>一括文字加工</h3>
+            <p>全行に「様」を付ける、前後に文字を足す、<strong>連番を振る</strong>をまとめて処理。</p>
+            <div class="flow-line"><span>一覧を貼る</span><b>→</b><span>まとめて加工</span></div>
+          </div>
+          <button class="open-tool">使ってみる <span>›</span></button>
+        </article>
+      </div>
+
+      <div class="no-results" id="noResults" hidden>
+        <div class="no-results-icon">⌕</div>
+        <strong>該当するツールはまだありません。</strong>
+        <span>「こんなツールが欲しい」が次の候補になります。</span>
+      </div>
+    </section>
+
+    </section>
+
+  <!-- SCHEDULE -->
+  <section id="schedule" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>日程候補メーカー</h2><p>カレンダーをドラッグすると、曜日・日付・時間を含むメール用テキストを自動生成します。</p></div>
+    </div>
+
+    <div class="card workspace">
+      <div class="calendar-toolbar">
+        <div>
+          <div class="week-title" id="weekTitle">今週</div>
+          <div class="calendar-hint">ドラッグで選択。土日も使えます。30分／15分で切り替え可能です。</div>
+        </div>
+        <div class="toolbar-actions">
+          <div class="slot-toggle">
+            <span>時間刻み</span>
+            <button class="slot-choice active" data-minutes="30">30分</button>
+            <button class="slot-choice" data-minutes="15">15分</button>
+          </div>
+          <button class="btn ghost" id="prevWeek">← 前週</button>
+          <button class="btn ghost" id="todayWeek">今週</button>
+          <button class="btn ghost" id="nextWeek">次週 →</button>
+          <button class="btn ghost" id="clearSchedule">クリア</button>
+        </div>
+      </div>
+
+      <div class="calendar-wrap"><div class="calendar" id="calendar"></div></div>
+
+      <div class="card result-card">
+        <div class="result-head">
+          <strong>そのままメールに貼れます</strong>
+          <button class="btn dark" id="copySchedule">文章をコピー</button>
+        </div>
+        <div class="grid2">
+          <div><label>冒頭文</label><input id="scheduleIntro" value="下記の日程でしたら調整可能です。" /></div>
+          <div><label>締め文</label><input id="scheduleOutro" value="ご都合のよい日時をお知らせいただけますと幸いです。" /></div>
+        </div>
+        <div id="scheduleOutput" aria-live="polite" class="result" style="margin-top:14px">カレンダーから候補時間を選択してください。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFF -->
+  <section id="diff" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>リスト比較</h2><p>2つの一覧を貼るだけで、Aだけ・Bだけ・両方にある項目を色分けします。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid2">
+        <div>
+          <label><span class="legend-dot dot-a"></span>リストA</label>
+          <textarea id="listA" class="diff-input-a" placeholder="1行に1件ずつ"></textarea>
+        </div>
+        <div>
+          <label><span class="legend-dot dot-b"></span>リストB</label>
+          <textarea id="listB" class="diff-input-b" placeholder="1行に1件ずつ"></textarea>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="compareLists">差分を見る</button>
+        <button class="btn ghost" id="clearLists">クリア</button>
+      </div>
+
+      <div class="diff-stats">
+        <div class="stat stat-a"><span><i class="legend-dot dot-a"></i>Aにだけある</span><b id="countOnlyA">0</b></div>
+        <div class="stat stat-b"><span><i class="legend-dot dot-b"></i>Bにだけある</span><b id="countOnlyB">0</b></div>
+        <div class="stat stat-c"><span><i class="legend-dot dot-c"></i>両方にある</span><b id="countCommon">0</b></div>
+      </div>
+
+      <div class="diff-cols">
+        <div><div class="diff-label"><span class="legend-dot dot-a"></span>Aにだけある</div><div class="diff-box box-a" id="onlyA" aria-live="polite"></div></div>
+        <div><div class="diff-label"><span class="legend-dot dot-b"></span>Bにだけある</div><div class="diff-box box-b" id="onlyB" aria-live="polite"></div></div>
+        <div><div class="diff-label"><span class="legend-dot dot-c"></span>両方にある</div><div class="diff-box box-c" id="common" aria-live="polite"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMAIL -->
+  <section id="email" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>メール宛先整形</h2><p>縦に並んだメールアドレスを、OutlookやGmailにそのまま貼れる形に変換します。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid2">
+        <div>
+          <label>メールアドレス一覧</label>
+          <textarea id="emailInput" placeholder="taro@example.com&#10;hanako@example.com&#10;info@example.com"></textarea>
+        </div>
+        <div>
+          <label>区切り文字</label>
+          <select id="emailDelimiter">
+            <option value=";">セミコロン ;</option>
+            <option value=",">カンマ ,</option>
+          </select>
+          <div class="actions">
+            <button class="btn primary" id="formatEmails">変換</button>
+            <button class="btn dark" id="copyEmails">コピー</button>
+          </div>
+          <div id="emailOutput" aria-live="polite" class="result" style="margin-top:14px">ここに変換結果が表示されます。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESS DAY -->
+  <section id="businessday" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>営業日計算</h2><p>「3営業日後」「5営業日前」などを土日を除いて計算します。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid3">
+        <div><label>基準日</label><input type="date" id="bdDate"></div>
+        <div><label>営業日数</label><input type="number" id="bdDays" value="3" min="0"></div>
+        <div><label>方向</label>
+          <select id="bdDirection"><option value="after">営業日後</option><option value="before">営業日前</option></select>
+        </div>
+      </div>
+      <div class="actions"><button class="btn primary" id="calcBusinessDay">計算する</button></div>
+      <div id="bdOutput" aria-live="polite" class="result" style="margin-top:14px">結果がここに表示されます。</div>
+      <div style="margin-top:8px;color:var(--muted);font-size:12px">※ 現在は土日のみ除外します。祝日対応は今後追加可能です。</div>
+    </div>
+  </section>
+
+  <!-- TRANSPOSE -->
+  <section id="transpose" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>縦横変換</h2><p>1行ずつ並んだ一覧を横並びに。カンマ区切り・タブ区切りのデータを縦並びに。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid2">
+        <div>
+          <label>入力</label>
+          <textarea id="transposeInput" placeholder="東京&#10;大阪&#10;名古屋"></textarea>
+        </div>
+        <div>
+          <label>変換</label>
+          <select id="transposeMode">
+            <option value="vertical_to_tab">縦 → 横（タブ区切り）</option>
+            <option value="vertical_to_comma">縦 → 横（カンマ区切り）</option>
+            <option value="horizontal_to_vertical">横 → 縦</option>
+          </select>
+          <div class="actions">
+            <button class="btn primary" id="transposeBtn">変換</button>
+            <button class="btn dark" id="copyTranspose">コピー</button>
+          </div>
+          <div id="transposeOutput" aria-live="polite" class="result" style="margin-top:14px">ここに変換結果が表示されます。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- DAILY REPORT -->
+  <section id="dailyreport" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>日報メーカー</h2><p>毎日の報告を、箇条書きから提出できる形へ。入力内容はブラウザ内だけで処理します。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid2">
+        <div><label>今日やったこと</label><textarea id="drToday" placeholder="例：&#10;10月予算の修正&#10;店舗別PLの確認&#10;取締役会資料の作成"></textarea></div>
+        <div><label>成果・進捗</label><textarea id="drProgress" placeholder="例：予算修正完了"></textarea></div>
+        <div><label>課題・気になる点</label><textarea id="drIssue" placeholder="例：A店の原価率を再確認"></textarea></div>
+        <div><label>明日やること</label><textarea id="drTomorrow" placeholder="例：取締役会資料を完成させる"></textarea></div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="makeDailyReport">日報を作る</button>
+        <button class="btn dark" id="copyDailyReport">コピー</button>
+      </div>
+      <div id="dailyReportOutput" aria-live="polite" class="result" style="margin-top:14px">ここに日報が表示されます。</div>
+    </div>
+  </section>
+
+  <!-- AGENDA -->
+  <section id="agenda" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>会議アジェンダメーカー</h2><p>会議時間と議題から、開始・終了時刻つきの進行表を作ります。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid3">
+        <div><label>開始時刻</label><input type="time" id="agendaStart" value="10:00"></div>
+        <div><label>会議時間</label><select id="agendaDuration"><option value="30">30分</option><option value="45">45分</option><option value="60" selected>60分</option><option value="90">90分</option><option value="120">120分</option></select></div>
+        <div><label>最後のまとめ時間</label><select id="agendaWrap"><option value="5">5分</option><option value="10" selected>10分</option><option value="15">15分</option></select></div>
+      </div>
+      <div style="margin-top:14px"><label>議題（1行に1つ）</label><textarea id="agendaTopics" placeholder="売上実績&#10;来月施策&#10;採用状況"></textarea></div>
+      <div class="actions">
+        <button class="btn primary" id="makeAgenda">アジェンダを作る</button>
+        <button class="btn dark" id="copyAgenda">コピー</button>
+      </div>
+      <div id="agendaOutput" aria-live="polite" class="result" style="margin-top:14px">ここにアジェンダが表示されます。</div>
+    </div>
+  </section>
+
+  <!-- WORKTIME -->
+  <section id="worktime" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>勤務時間・残業計算</h2><p>出勤・退勤・休憩から実働時間を計算。所定時間を超えた分も表示します。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid3">
+        <div><label>出勤</label><input type="time" id="workStart" value="09:00"></div>
+        <div><label>退勤</label><input type="time" id="workEnd" value="18:00"></div>
+        <div><label>休憩（分）</label><input type="number" id="breakMin" value="60" min="0"></div>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <div><label>所定労働時間</label><input type="number" id="regularHours" value="8" min="0" step="0.25"></div>
+        <div><label>日跨ぎ</label><select id="overnight"><option value="auto">退勤が早ければ翌日扱い</option><option value="same">同日扱い</option></select></div>
+      </div>
+      <div class="actions"><button class="btn primary" id="calcWorktime">計算する</button></div>
+      <div id="worktimeOutput" aria-live="polite" class="result" style="margin-top:14px">結果がここに表示されます。</div>
+    </div>
+  </section>
+
+  <!-- DEDUPE -->
+  <section id="dedupe" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>重複削除・並び替え</h2><p>1行に1件ずつ貼り付けて、重複を消し、好きな順番に並べます。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid2">
+        <div><label>元のリスト</label><textarea id="dedupeInput" placeholder="東京&#10;大阪&#10;東京&#10;千葉&#10;大阪"></textarea></div>
+        <div>
+          <label>並び順</label>
+          <select id="dedupeSort">
+            <option value="keep">元の順番を維持</option>
+            <option value="asc">昇順</option>
+            <option value="desc">降順</option>
+          </select>
+          <div class="actions">
+            <button class="btn primary" id="runDedupe">整理する</button>
+            <button class="btn dark" id="copyDedupe">コピー</button>
+          </div>
+          <div id="dedupeMeta" style="margin-top:14px;color:var(--muted);font-size:13px"></div>
+          <div id="dedupeOutput" aria-live="polite" class="result" style="margin-top:8px">ここに整理結果が表示されます。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEXT BATCH -->
+  <section id="textbatch" class="page tool-page">
+    <div class="tool-head">
+      <div><h2>一括文字加工</h2><p>一覧の全行に同じ文字を追加したり、番号を振ったりします。</p></div>
+    </div>
+    <div class="card workspace">
+      <div class="grid2">
+        <div><label>元のリスト</label><textarea id="batchInput" placeholder="山田&#10;佐藤&#10;鈴木"></textarea></div>
+        <div>
+          <label>加工方法</label>
+          <select id="batchMode">
+            <option value="suffix">後ろに文字を追加</option>
+            <option value="prefix">前に文字を追加</option>
+            <option value="number">連番を付ける</option>
+            <option value="trim">前後の空白を削除</option>
+          </select>
+          <div style="margin-top:12px" id="batchTextWrap"><label>追加する文字</label><input id="batchText" value="様"></div>
+          <div class="actions">
+            <button class="btn primary" id="runBatch">加工する</button>
+            <button class="btn dark" id="copyBatch">コピー</button>
+          </div>
+          <div id="batchOutput" aria-live="polite" class="result" style="margin-top:14px">ここに加工結果が表示されます。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 5秒ツール · <a href="privacy.html">プライバシー</a></footer>
+</main>
+
+<div class="bookmark-modal" id="bookmarkModal">
+  <div class="bookmark-dialog">
+    <h3>次も1クリックで戻れます。</h3>
+    <p>ブラウザのお気に入りに追加してください。</p>
+    <div class="shortcut-key" id="modalShortcut">⌘ D</div>
+    <p id="modalHelp">Macなら ⌘ + D を押すと、このページをブックマークできます。</p>
+    <div class="modal-actions"><button class="btn dark" id="closeBookmarkModal">閉じる</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+(function(){
+  const $=(id)=>document.getElementById(id);
+
+  const TOOL_INFO={
+    schedule:{name:'日程候補メーカー',hint:'予定を決める',keywords:'日程 予定 カレンダー メール 候補 調整 会議'},
+    diff:{name:'リスト比較',hint:'一覧を確認',keywords:'リスト 比較 差分 一覧 名簿'},
+    email:{name:'メール宛先整形',hint:'メールを送る',keywords:'メール 宛先 Outlook Gmail'},
+    businessday:{name:'営業日計算',hint:'締切を確認',keywords:'営業日 日付 締切 期限'},
+    transpose:{name:'縦横変換',hint:'Excel前の整形',keywords:'縦横 Excel タブ カンマ'},
+    dailyreport:{name:'日報メーカー',hint:'日報を出す',keywords:'日報 業務報告 進捗 課題'},
+    agenda:{name:'会議アジェンダメーカー',hint:'会議を始める',keywords:'会議 アジェンダ 議題 時間配分'},
+    worktime:{name:'勤務時間・残業計算',hint:'勤務時間を確認',keywords:'勤務時間 実働 残業 出勤 退勤'},
+    dedupe:{name:'重複削除・並び替え',hint:'一覧を整える',keywords:'重複 削除 並び替え リスト'},
+    textbatch:{name:'一括文字加工',hint:'文字列を整える',keywords:'一括 文字 加工 敬称 連番'}
+  };
+
+  function storageGet(key,fallback){
+    try{return JSON.parse(localStorage.getItem(key)) ?? fallback}catch(e){return fallback}
+  }
+  function storageSet(key,value){
+    try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}
+  }
+
+  let favorites=storageGet('fiveSecFavorites',[]);
+  let recentTools=storageGet('fiveSecRecent',[]);
+
+  function addRecent(id){
+    if(!TOOL_INFO[id]) return;
+    recentTools=[id,...recentTools.filter(x=>x!==id)].slice(0,4);
+    storageSet('fiveSecRecent',recentTools);
+    renderPersonalAreas();
+  }
+
+  function toggleFavorite(id){
+    favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[id,...favorites];
+    storageSet('fiveSecFavorites',favorites);
+    renderPersonalAreas();
+    syncFavoriteStars();
+  }
+
+  function compactToolHtml(id){
+    const t=TOOL_INFO[id];
+    return `<div class="compact-tool" data-compact-open="${id}">
+      <strong>${t.name}</strong><span>${t.hint} →</span>
+    </div>`;
+  }
+
+  function renderPersonalAreas(){
+    const favArea=$('favoritesArea'),recentArea=$('recentArea');
+    $('favoritesList').innerHTML=favorites.filter(id=>TOOL_INFO[id]).map(compactToolHtml).join('');
+    $('recentList').innerHTML=recentTools.filter(id=>TOOL_INFO[id]).map(compactToolHtml).join('');
+    favArea.hidden=favorites.length===0;
+    recentArea.hidden=recentTools.length===0;
+    document.querySelectorAll('[data-compact-open]').forEach(el=>{
+      el.addEventListener('click',()=>showPage(el.dataset.compactOpen));
+    });
+  }
+
+  function syncFavoriteStars(){
+    document.querySelectorAll('[data-favorite]').forEach(btn=>{
+      const active=favorites.includes(btn.dataset.favorite);
+      btn.classList.toggle('active',active);
+      btn.textContent=active?'★':'☆';
+    });
+  }
+
+  document.querySelectorAll('[data-favorite]').forEach(btn=>{
+    btn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      toggleFavorite(btn.dataset.favorite);
+    });
+  });
+
+  // Tool search
+  function filterTools(query){
+    const q=query.trim().toLowerCase();
+    let shown=0;
+    document.querySelectorAll('#toolGrid .tool-card').forEach(card=>{
+      const hay=(card.dataset.search+' '+card.textContent).toLowerCase();
+      const ok=!q||hay.includes(q);
+      card.style.display=ok?'':'none';
+      if(ok) shown++;
+    });
+    $('toolCountLabel').textContent=q?`${shown}個見つかりました`:'10個のツール';
+    $('noResults').hidden=shown!==0;
+  }
+
+  $('toolSearch').addEventListener('input',e=>filterTools(e.target.value));
+  $('clearSearch').addEventListener('click',()=>{
+    $('toolSearch').value='';
+    filterTools('');
+    $('toolSearch').focus();
+  });
+  document.querySelectorAll('[data-query]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      $('toolSearch').value=btn.dataset.query;
+      filterTools(btn.dataset.query);
+    });
+  });
+
+  // Browser bookmark coaching
+  const isMac=/Mac|iPhone|iPad|iPod/.test(navigator.platform||navigator.userAgent);
+  const shortcut=isMac?'⌘ D':'Ctrl + D';
+  if($('modalShortcut')) $('modalShortcut').textContent=shortcut;
+  if($('modalHelp')) {
+    $('modalHelp').textContent=isMac
+      ?'Macなら ⌘ + D を押すと、このページをブックマークできます。'
+      :'Windowsなら Ctrl + D を押すと、このページをブックマークできます。';
+  }
+
+  function openBookmarkModal(){$('bookmarkModal').classList.add('show')}
+  function closeBookmarkModal(){$('bookmarkModal').classList.remove('show')}
+  $('bookmarkSite').addEventListener('click',openBookmarkModal);
+  $('closeBookmarkModal').addEventListener('click',closeBookmarkModal);
+  $('bookmarkModal').addEventListener('click',e=>{if(e.target===$('bookmarkModal'))closeBookmarkModal()});
+
+  renderPersonalAreas();
+  syncFavoriteStars();
+
+  function showPage(id){
+    const target=$(id);
+    if(!target) return;
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+    target.classList.add('active');
+    const navBtn=document.querySelector(`.nav button[data-page="${id}"]`);
+    if(navBtn) navBtn.classList.add('active');
+    if(id!=='home') addRecent(id);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  document.querySelectorAll('.nav button').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
+  document.querySelectorAll('[data-open]').forEach(card=>card.addEventListener('click',(e)=>{if(!e.target.closest('.favorite-star'))showPage(card.dataset.open)}));
+  $('brandHome').addEventListener('click',()=>showPage('home'));
+
+  function showToast(){
+    const t=$('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1300);
+  }
+  function copyText(text){
+    if(!text) return;
+    const fallback=()=>{
+      const ta=document.createElement('textarea');
+      ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.focus();ta.select();
+      try{document.execCommand('copy');showToast()}catch(e){alert('コピーできませんでした。手動でコピーしてください。')}
+      ta.remove();
+    };
+    if(navigator.clipboard&&window.isSecureContext){
+      navigator.clipboard.writeText(text).then(showToast).catch(fallback);
+    }else fallback();
+  }
+
+  // Calendar
+  const START_HOUR=8,END_HOUR=20;
+  let SLOT_MIN=30,weekOffset=0,isDragging=false,dragSelectMode=true,dragDay=null,selectedRangesMemory=[];
+
+  function mondayOf(date){
+    const d=new Date(date),day=d.getDay(),diff=(day===0?-6:1-day);
+    d.setDate(d.getDate()+diff);d.setHours(0,0,0,0);return d;
+  }
+  function addDays(date,n){const d=new Date(date);d.setDate(d.getDate()+n);return d}
+  function fmtISO(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}
+  function getWeekStart(){const base=mondayOf(new Date());base.setDate(base.getDate()+weekOffset*7);return base}
+  function timeFromIndex(idx){
+    const total=START_HOUR*60+idx*SLOT_MIN,h=Math.floor(total/60),m=total%60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  }
+  function minutesFromTime(t){const [h,m]=t.split(':').map(Number);return h*60+m}
+
+  function renderCalendar(){
+    const cal=$('calendar');cal.innerHTML='';
+    const ws=getWeekStart(),we=addDays(ws,6);
+    $('weekTitle').textContent=`${ws.getFullYear()}年${ws.getMonth()+1}月${ws.getDate()}日 〜 ${we.getMonth()+1}月${we.getDate()}日`;
+
+    const corner=document.createElement('div');corner.className='corner';cal.appendChild(corner);
+    const dows=['月','火','水','木','金','土','日'];
+    for(let d=0;d<7;d++){
+      const date=addDays(ws,d),head=document.createElement('div');
+      head.className='day-head'+(d===5?' saturday':d===6?' sunday':'');
+      head.innerHTML=`<div class="dow">${dows[d]}曜日</div><div class="date">${date.getMonth()+1}/${date.getDate()}</div>`;
+      cal.appendChild(head);
+    }
+
+    const slotCount=((END_HOUR-START_HOUR)*60)/SLOT_MIN;
+    for(let i=0;i<slotCount;i++){
+      const label=document.createElement('div');
+      label.className='time-label';
+      const total=START_HOUR*60+i*SLOT_MIN;
+      label.textContent=(total%60===0)?timeFromIndex(i):'';
+      cal.appendChild(label);
+
+      for(let d=0;d<7;d++){
+        const date=addDays(ws,d),slot=document.createElement('div');
+        slot.className='slot'+(d===5?' saturday':d===6?' sunday':'');
+        slot.dataset.date=fmtISO(date);slot.dataset.index=String(i);
+        slot.addEventListener('mousedown',(e)=>{
+          e.preventDefault();isDragging=true;dragDay=slot.dataset.date;
+          dragSelectMode=!slot.classList.contains('selected');
+          setSlot(slot,dragSelectMode);
+        });
+        slot.addEventListener('mouseenter',()=>{if(isDragging&&slot.dataset.date===dragDay)setSlot(slot,dragSelectMode)});
+        slot.addEventListener('mouseup',()=>{isDragging=false;dragDay=null});
+        cal.appendChild(slot);
+      }
+    }
+    restoreRanges();updateScheduleText();
+  }
+
+  function setSlot(slot,on){slot.classList.toggle('selected',on);updateScheduleText()}
+  function getSelectedRanges(){
+    const grouped={};
+    document.querySelectorAll('.slot.selected').forEach(slot=>{
+      const date=slot.dataset.date,idx=Number(slot.dataset.index);
+      (grouped[date]??=[]).push(idx);
+    });
+    const ranges=[];
+    Object.keys(grouped).sort().forEach(date=>{
+      const arr=[...new Set(grouped[date])].sort((a,b)=>a-b);
+      if(!arr.length)return;
+      let start=arr[0],prev=arr[0];
+      for(let i=1;i<=arr.length;i++){
+        const cur=arr[i];
+        if(cur===prev+1){prev=cur;continue}
+        ranges.push({date,start:timeFromIndex(start),end:timeFromIndex(prev+1)});
+        start=cur;prev=cur;
+      }
+    });
+    return ranges;
+  }
+  function restoreRanges(){
+    if(!selectedRangesMemory.length)return;
+    document.querySelectorAll('.slot').forEach(slot=>{
+      const date=slot.dataset.date,idx=Number(slot.dataset.index);
+      const ss=START_HOUR*60+idx*SLOT_MIN,se=ss+SLOT_MIN;
+      const hit=selectedRangesMemory.some(r=>r.date===date&&ss>=minutesFromTime(r.start)&&se<=minutesFromTime(r.end));
+      if(hit)slot.classList.add('selected');
+    });
+  }
+  function jpDate(iso){
+    const [y,m,d]=iso.split('-').map(Number),date=new Date(y,m-1,d),dow=['日','月','火','水','木','金','土'][date.getDay()];
+    return `${m}月${d}日（${dow}）`;
+  }
+  function updateScheduleText(){
+    const ranges=getSelectedRanges();
+    if(!ranges.length){$('scheduleOutput').textContent='カレンダーから候補時間を選択してください。';return}
+    const intro=$('scheduleIntro').value.trim(),outro=$('scheduleOutro').value.trim();
+    const body=ranges.map(r=>`・${jpDate(r.date)} ${r.start}〜${r.end}`).join('\n');
+    $('scheduleOutput').textContent=`${intro}\n\n${body}\n\n${outro}`;
+  }
+
+  document.querySelectorAll('.slot-choice').forEach(btn=>btn.addEventListener('click',()=>{
+    selectedRangesMemory=getSelectedRanges();
+    SLOT_MIN=Number(btn.dataset.minutes);
+    document.querySelectorAll('.slot-choice').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.documentElement.style.setProperty('--slot-h',SLOT_MIN===15?'24px':'36px');
+    renderCalendar();
+  }));
+  $('prevWeek').addEventListener('click',()=>{weekOffset--;selectedRangesMemory=[];renderCalendar()});
+  $('nextWeek').addEventListener('click',()=>{weekOffset++;selectedRangesMemory=[];renderCalendar()});
+  $('todayWeek').addEventListener('click',()=>{weekOffset=0;selectedRangesMemory=[];renderCalendar()});
+  $('clearSchedule').addEventListener('click',()=>{document.querySelectorAll('.slot.selected').forEach(s=>s.classList.remove('selected'));selectedRangesMemory=[];updateScheduleText()});
+  $('scheduleIntro').addEventListener('input',updateScheduleText);
+  $('scheduleOutro').addEventListener('input',updateScheduleText);
+  $('copySchedule').addEventListener('click',()=>copyText($('scheduleOutput').textContent));
+  document.addEventListener('mouseup',()=>{isDragging=false;dragDay=null});
+  renderCalendar();
+
+  // Diff
+  function parseList(v){return [...new Set(v.split(/\r?\n/).map(s=>s.trim()).filter(Boolean))]}
+  $('compareLists').addEventListener('click',()=>{
+    const a=parseList($('listA').value),b=parseList($('listB').value),sa=new Set(a),sb=new Set(b);
+    const onlyA=a.filter(x=>!sb.has(x)),onlyB=b.filter(x=>!sa.has(x)),common=a.filter(x=>sb.has(x));
+    $('countOnlyA').textContent=onlyA.length;$('countOnlyB').textContent=onlyB.length;$('countCommon').textContent=common.length;
+    $('onlyA').textContent=onlyA.join('\n')||'なし';$('onlyB').textContent=onlyB.join('\n')||'なし';$('common').textContent=common.join('\n')||'なし';
+  });
+  $('clearLists').addEventListener('click',()=>{
+    $('listA').value='';$('listB').value='';$('countOnlyA').textContent='0';$('countOnlyB').textContent='0';$('countCommon').textContent='0';
+    $('onlyA').textContent='';$('onlyB').textContent='';$('common').textContent='';
+  });
+
+  // Emails
+  $('formatEmails').addEventListener('click',()=>{
+    const items=$('emailInput').value.split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean);
+    $('emailOutput').textContent=items.join($('emailDelimiter').value+' ');
+  });
+  $('copyEmails').addEventListener('click',()=>copyText($('emailOutput').textContent));
+
+  // Business day
+  const today=new Date();
+  $('bdDate').value=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  $('calcBusinessDay').addEventListener('click',()=>{
+    const dateStr=$('bdDate').value;
+    let n=Math.max(0,Number($('bdDays').value)||0);
+    if(!dateStr){$('bdOutput').textContent='基準日を選択してください。';return}
+    const [y,m,d]=dateStr.split('-').map(Number);
+    const date=new Date(y,m-1,d);
+    const step=$('bdDirection').value==='after'?1:-1;
+    let count=0;
+    while(count<n){
+      date.setDate(date.getDate()+step);
+      const day=date.getDay();
+      if(day!==0&&day!==6)count++;
+    }
+    const dow=['日','月','火','水','木','金','土'][date.getDay()];
+    $('bdOutput').textContent=`${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${dow}）`;
+  });
+
+  // Transpose
+  $('transposeBtn').addEventListener('click',()=>{
+    const mode=$('transposeMode').value,input=$('transposeInput').value.trim();
+    if(!input){$('transposeOutput').textContent='入力してください。';return}
+    if(mode==='vertical_to_tab'){
+      $('transposeOutput').textContent=input.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).join('\t');
+    }else if(mode==='vertical_to_comma'){
+      $('transposeOutput').textContent=input.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).join(', ');
+    }else{
+      $('transposeOutput').textContent=input.split(/[\t,;]+/).map(x=>x.trim()).filter(Boolean).join('\n');
+    }
+  });
+  $('copyTranspose').addEventListener('click',()=>copyText($('transposeOutput').textContent));
+
+  // Daily report
+  function bulletize(value){
+    return value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map(x=>x.startsWith('・')?x:`・${x}`).join('\n');
+  }
+  $('makeDailyReport').addEventListener('click',()=>{
+    const sections=[
+      ['【本日の業務】',bulletize($('drToday').value)],
+      ['【成果・進捗】',bulletize($('drProgress').value)],
+      ['【課題・気になる点】',bulletize($('drIssue').value)],
+      ['【明日の予定】',bulletize($('drTomorrow').value)]
+    ].filter(x=>x[1]);
+    $('dailyReportOutput').textContent=sections.length?sections.map(x=>`${x[0]}\n${x[1]}`).join('\n\n'):'内容を入力してください。';
+  });
+  $('copyDailyReport').addEventListener('click',()=>copyText($('dailyReportOutput').textContent));
+
+  // Agenda
+  function timeToMinutes(t){const [h,m]=t.split(':').map(Number);return h*60+m}
+  function minutesToTime(min){
+    min=(min+1440)%1440;
+    return `${String(Math.floor(min/60)).padStart(2,'0')}:${String(min%60).padStart(2,'0')}`;
+  }
+  $('makeAgenda').addEventListener('click',()=>{
+    const topics=$('agendaTopics').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    if(!topics.length){$('agendaOutput').textContent='議題を1つ以上入力してください。';return}
+    const start=timeToMinutes($('agendaStart').value||'10:00');
+    const duration=Number($('agendaDuration').value);
+    const wrap=Math.min(Number($('agendaWrap').value),duration);
+    const main=Math.max(0,duration-wrap);
+    const per=Math.floor(main/topics.length);
+    let remainder=main-per*topics.length;
+    let cursor=start;
+    const lines=[];
+    topics.forEach(topic=>{
+      const span=per+(remainder>0?1:0);
+      if(remainder>0) remainder--;
+      const end=cursor+span;
+      lines.push(`${minutesToTime(cursor)}〜${minutesToTime(end)}　${topic}`);
+      cursor=end;
+    });
+    if(wrap>0) lines.push(`${minutesToTime(cursor)}〜${minutesToTime(start+duration)}　決定事項・確認`);
+    $('agendaOutput').textContent=lines.join('\n');
+  });
+  $('copyAgenda').addEventListener('click',()=>copyText($('agendaOutput').textContent));
+
+  // Worktime
+  $('calcWorktime').addEventListener('click',()=>{
+    const s=timeToMinutes($('workStart').value||'09:00');
+    let e=timeToMinutes($('workEnd').value||'18:00');
+    if($('overnight').value==='auto' && e<s) e+=1440;
+    const breakMin=Math.max(0,Number($('breakMin').value)||0);
+    const worked=Math.max(0,e-s-breakMin);
+    const regular=Math.max(0,Number($('regularHours').value)||0)*60;
+    const overtime=Math.max(0,worked-regular);
+    const fmt=(m)=>`${Math.floor(m/60)}時間${m%60}分`;
+    $('worktimeOutput').textContent=`実働：${fmt(worked)}\n残業：${fmt(overtime)}`;
+  });
+
+  // Dedupe
+  $('runDedupe').addEventListener('click',()=>{
+    const raw=$('dedupeInput').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    let out=[...new Set(raw)];
+    if($('dedupeSort').value==='asc') out.sort((a,b)=>a.localeCompare(b,'ja'));
+    if($('dedupeSort').value==='desc') out.sort((a,b)=>b.localeCompare(a,'ja'));
+    $('dedupeMeta').textContent=`${raw.length}件 → ${out.length}件（重複 ${raw.length-out.length}件を削除）`;
+    $('dedupeOutput').textContent=out.join('\n')||'結果が空です。';
+  });
+  $('copyDedupe').addEventListener('click',()=>copyText($('dedupeOutput').textContent));
+
+  // Batch text
+  function syncBatchInput(){
+    $('batchTextWrap').style.display=['suffix','prefix'].includes($('batchMode').value)?'block':'none';
+  }
+  $('batchMode').addEventListener('change',syncBatchInput);
+  syncBatchInput();
+  $('runBatch').addEventListener('click',()=>{
+    const rows=$('batchInput').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    const mode=$('batchMode').value,text=$('batchText').value;
+    let out=rows;
+    if(mode==='suffix') out=rows.map(x=>x+text);
+    else if(mode==='prefix') out=rows.map(x=>text+x);
+    else if(mode==='number') out=rows.map((x,i)=>`${i+1}. ${x}`);
+    else if(mode==='trim') out=rows.map(x=>x.trim());
+    $('batchOutput').textContent=out.join('\n')||'結果が空です。';
+  });
+  $('copyBatch').addEventListener('click',()=>copyText($('batchOutput').textContent));
+
+})();
+</script>
+<script src="app.js" defer></script>
+</body>
+</html>
