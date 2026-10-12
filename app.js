@@ -1,5 +1,6 @@
 (function(){
   const $=(id)=>document.getElementById(id);
+  const track=(name,params={})=>window.fiveSecAnalytics?.track(name,params);
 
   const TOOL_INFO={
     schedule:{name:'日程候補メーカー',hint:'予定を決める',keywords:'日程 予定 カレンダー メール 候補 調整 会議'},
@@ -22,7 +23,9 @@
   }
 
   let favorites=storageGet('fiveSecFavorites',[]);
+  if(!Array.isArray(favorites)) favorites=[];
   let recentTools=storageGet('fiveSecRecent',[]);
+  if(!Array.isArray(recentTools)) recentTools=[];
 
   function addRecent(id){
     if(!TOOL_INFO[id]) return;
@@ -117,6 +120,7 @@
   renderPersonalAreas();
   syncFavoriteStars();
 
+  let measuredPage=null;
   function showPage(id,{updateUrl=true,scroll=true}={}){
     const target=$(id);
     if(!target) return;
@@ -126,6 +130,7 @@
     const navBtn=document.querySelector(`.nav button[data-page="${id}"]`);
     if(navBtn) navBtn.classList.add('active');
     if(id!=='home') addRecent(id);
+    if(measuredPage!==id){track('page_view',{tool:id});measuredPage=id}
     if(updateUrl){
       const next=id==='home' ? location.pathname : `${location.pathname}#${id}`;
       history.pushState({page:id},'',next);
@@ -151,21 +156,23 @@
     showPage(validPages.has(requested)?requested:'home',{updateUrl:false,scroll:false});
   }
   window.addEventListener('popstate',routeFromUrl);
+  window.addEventListener('hashchange',routeFromUrl);
 
   function showToast(){
     const t=$('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1300);
   }
-  function copyText(text){
+  function copyText(text,onSuccess=()=>{}){
+    const success=()=>{showToast();onSuccess()};
     if(!text) return;
     const fallback=()=>{
       const ta=document.createElement('textarea');
       ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
       document.body.appendChild(ta);ta.focus();ta.select();
-      try{document.execCommand('copy');showToast()}catch(e){alert('コピーできませんでした。手動でコピーしてください。')}
+      try{if(!document.execCommand('copy')) throw new Error('copy failed');success()}catch(e){track('copy_error');alert('コピーできませんでした。手動でコピーしてください。')}
       ta.remove();
     };
     if(navigator.clipboard&&window.isSecureContext){
-      navigator.clipboard.writeText(text).then(showToast).catch(fallback);
+      navigator.clipboard.writeText(text).then(success).catch(fallback);
     }else fallback();
   }
 
@@ -212,20 +219,30 @@
         const date=addDays(ws,d),slot=document.createElement('div');
         slot.className='slot'+(d===5?' saturday':d===6?' sunday':'');
         slot.dataset.date=fmtISO(date);slot.dataset.index=String(i);
-        slot.addEventListener('mousedown',(e)=>{
+        slot.tabIndex=0;
+        slot.setAttribute('role','button');
+        slot.setAttribute('aria-label',`${jpDate(slot.dataset.date)} ${timeFromIndex(i)}〜${timeFromIndex(i+1)}`);
+        slot.setAttribute('aria-pressed','false');
+        slot.addEventListener('pointerdown',(e)=>{
+          if(e.pointerType!=='mouse'||e.button!==0)return;
           e.preventDefault();isDragging=true;dragDay=slot.dataset.date;
           dragSelectMode=!slot.classList.contains('selected');
           setSlot(slot,dragSelectMode);
         });
-        slot.addEventListener('mouseenter',()=>{if(isDragging&&slot.dataset.date===dragDay)setSlot(slot,dragSelectMode)});
-        slot.addEventListener('mouseup',()=>{isDragging=false;dragDay=null});
+        slot.addEventListener('pointerenter',()=>{if(isDragging&&slot.dataset.date===dragDay)setSlot(slot,dragSelectMode)});
+        slot.addEventListener('click',e=>{if(e.pointerType!=='mouse' && e.detail!==0)setSlot(slot,!slot.classList.contains('selected'))});
+        slot.addEventListener('keydown',e=>{
+          if(e.key==='Enter'||e.key===' '){e.preventDefault();setSlot(slot,!slot.classList.contains('selected'))}
+          const delta={ArrowRight:1,ArrowLeft:-1,ArrowDown:7,ArrowUp:-7}[e.key];
+          if(delta){e.preventDefault();const slots=[...cal.querySelectorAll('.slot')];slots[slots.indexOf(slot)+delta]?.focus()}
+        });
         cal.appendChild(slot);
       }
     }
     restoreRanges();updateScheduleText();
   }
 
-  function setSlot(slot,on){slot.classList.toggle('selected',on);updateScheduleText()}
+  function setSlot(slot,on){slot.classList.toggle('selected',on);slot.setAttribute('aria-pressed',String(on));updateScheduleText();track('schedule_select',{slot_minutes:SLOT_MIN})}
   function getSelectedRanges(){
     const grouped={};
     document.querySelectorAll('.slot.selected').forEach(slot=>{
@@ -252,7 +269,7 @@
       const date=slot.dataset.date,idx=Number(slot.dataset.index);
       const ss=START_HOUR*60+idx*SLOT_MIN,se=ss+SLOT_MIN;
       const hit=selectedRangesMemory.some(r=>r.date===date&&ss>=minutesFromTime(r.start)&&se<=minutesFromTime(r.end));
-      if(hit)slot.classList.add('selected');
+      if(hit){slot.classList.add('selected');slot.setAttribute('aria-pressed','true')}
     });
   }
   function jpDate(iso){
@@ -261,6 +278,7 @@
   }
   function updateScheduleText(){
     const ranges=getSelectedRanges();
+    $('copySchedule').disabled=!ranges.length;
     if(!ranges.length){$('scheduleOutput').textContent='カレンダーから候補時間を選択してください。';return}
     const intro=$('scheduleIntro').value.trim(),outro=$('scheduleOutro').value.trim();
     const body=ranges.map(r=>`・${jpDate(r.date)} ${r.start}〜${r.end}`).join('\n');
@@ -278,11 +296,13 @@
   $('prevWeek').addEventListener('click',()=>{weekOffset--;selectedRangesMemory=[];renderCalendar()});
   $('nextWeek').addEventListener('click',()=>{weekOffset++;selectedRangesMemory=[];renderCalendar()});
   $('todayWeek').addEventListener('click',()=>{weekOffset=0;selectedRangesMemory=[];renderCalendar()});
-  $('clearSchedule').addEventListener('click',()=>{document.querySelectorAll('.slot.selected').forEach(s=>s.classList.remove('selected'));selectedRangesMemory=[];updateScheduleText()});
+  $('clearSchedule').addEventListener('click',()=>{document.querySelectorAll('.slot.selected').forEach(s=>{s.classList.remove('selected');s.setAttribute('aria-pressed','false')});selectedRangesMemory=[];updateScheduleText()});
   $('scheduleIntro').addEventListener('input',updateScheduleText);
   $('scheduleOutro').addEventListener('input',updateScheduleText);
-  $('copySchedule').addEventListener('click',()=>copyText($('scheduleOutput').textContent));
-  document.addEventListener('mouseup',()=>{isDragging=false;dragDay=null});
+  $('copySchedule').addEventListener('click',()=>{if(getSelectedRanges().length)copyText($('scheduleOutput').textContent,()=>track('schedule_copy',{slot_minutes:SLOT_MIN}))});
+  document.addEventListener('pointerup',()=>{isDragging=false;dragDay=null});
+  document.addEventListener('pointercancel',()=>{isDragging=false;dragDay=null});
+  window.addEventListener('blur',()=>{isDragging=false;dragDay=null});
   renderCalendar();
   routeFromUrl();
 
