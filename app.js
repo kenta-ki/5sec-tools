@@ -279,6 +279,7 @@
   function updateScheduleText(){
     const ranges=getSelectedRanges();
     $('copySchedule').disabled=!ranges.length;
+    $('selectionSummary').textContent=ranges.length?`${ranges.length}件の候補を選択中 · コピーできます`:'まずは候補を1つ選んでみましょう';
     if(!ranges.length){$('scheduleOutput').textContent='カレンダーから候補時間を選択してください。';return}
     const intro=$('scheduleIntro').value.trim(),outro=$('scheduleOutro').value.trim();
     const body=ranges.map(r=>`・${jpDate(r.date)} ${r.start}〜${r.end}`).join('\n');
@@ -297,9 +298,10 @@
   $('nextWeek').addEventListener('click',()=>{weekOffset++;selectedRangesMemory=[];renderCalendar()});
   $('todayWeek').addEventListener('click',()=>{weekOffset=0;selectedRangesMemory=[];renderCalendar()});
   $('clearSchedule').addEventListener('click',()=>{document.querySelectorAll('.slot.selected').forEach(s=>{s.classList.remove('selected');s.setAttribute('aria-pressed','false')});selectedRangesMemory=[];updateScheduleText()});
+  $('scheduleFeedback').addEventListener('click',()=>track('feedback_open'));
   $('scheduleIntro').addEventListener('input',updateScheduleText);
   $('scheduleOutro').addEventListener('input',updateScheduleText);
-  $('copySchedule').addEventListener('click',()=>{if(getSelectedRanges().length)copyText($('scheduleOutput').textContent,()=>track('schedule_copy',{slot_minutes:SLOT_MIN}))});
+  $('copySchedule').addEventListener('click',()=>{if(getSelectedRanges().length)copyText($('scheduleOutput').textContent,()=>{track('schedule_copy',{slot_minutes:SLOT_MIN});$('feedbackTitle').textContent='コピーできました。使い心地を教えてください';})});
   document.addEventListener('pointerup',()=>{isDragging=false;dragDay=null});
   document.addEventListener('pointercancel',()=>{isDragging=false;dragDay=null});
   window.addEventListener('blur',()=>{isDragging=false;dragDay=null});

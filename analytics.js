@@ -18,7 +18,7 @@
     document.head.appendChild(script);
   }
   function track(name,params={}){
-    if(!['page_view','schedule_select','schedule_copy','copy_error','schedule_start'].includes(name))return;
+    if(!['page_view','schedule_select','schedule_copy','copy_error','schedule_start','feedback_open'].includes(name))return;
     const safe={};
     if(name==='page_view'){
       lastPage=allowed.has(params.tool)?params.tool:'home';

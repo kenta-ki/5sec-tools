@@ -245,10 +245,11 @@
   <!-- SCHEDULE -->
   <section id="schedule" class="page tool-page">
     <div class="tool-head">
-      <div><h2>日程候補メーカー</h2><p>カレンダーをタップ・ドラッグで選ぶと、曜日・日付・時間入りのメール文を作成できます。</p></div>
+      <div><span class="schedule-eyebrow">SCHEDULE / 日程調整を、軽やかに。</span><h2>候補を選んで、<br>そのまま送ろう。</h2><p>空いている時間を選ぶだけ。メールに貼れる日程候補ができあがります。</p><div class="schedule-trust">無料 · ログイン不要 · 入力内容はブラウザ内で処理</div></div>
     </div>
 
     <div class="card workspace">
+      <div class="schedule-step"><span>01</span><strong>空いている時間を選ぶ</strong><small>選び直しは、もう一度タップ</small></div>
       <div class="calendar-toolbar">
         <div>
           <div class="week-title" id="weekTitle">今週</div>
@@ -271,15 +272,17 @@
 
       <div class="card result-card">
         <div class="result-head">
-          <strong>そのままメールに貼れます</strong>
+          <div><span class="schedule-eyebrow">02 / COPY & SEND</span><strong>文章をコピーして、メールへ</strong><p id="selectionSummary" class="selection-summary" role="status">まずは候補を1つ選んでみましょう</p></div>
           <button class="btn dark" id="copySchedule" disabled>文章をコピー</button>
         </div>
-        <div class="grid2">
+        <details class="schedule-customize"><summary>メールの冒頭・締めの文章を変える</summary>        <div class="grid2">
           <div><label for="scheduleIntro">冒頭文</label><input id="scheduleIntro" value="下記の日程でしたら調整可能です。" /></div>
           <div><label for="scheduleOutro">締め文</label><input id="scheduleOutro" value="ご都合のよい日時をお知らせいただけますと幸いです。" /></div>
         </div>
+</details>
         <div id="scheduleOutput" aria-live="polite" class="result" style="margin-top:14px">カレンダーから候補時間を選択してください。</div>
       </div>
+<aside class="schedule-feedback"><div><strong id="feedbackTitle">使ってみて、どうでしたか？</strong><p>あなたのひとことが、次の改善につながります。</p></div><a id="scheduleFeedback" class="btn ghost" href="https://docs.google.com/forms/d/e/1FAIpQLSdo-b31oyVD0MKhWe7cwTpHbFBrxkNhSCU-0WmiV0k3jZIWvQ/viewform" target="_blank" rel="noopener noreferrer">匿名で感想を送る ↗</a><small>任意・約30秒 / Googleフォームが別タブで開きます</small></aside>
     </div>
   </section>
 

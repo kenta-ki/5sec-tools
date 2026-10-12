@@ -449,3 +449,39 @@
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* Quiet, focused schedule workspace */
+#schedule{--accent:#206b58;--line:#e1e7e3;--muted:#596960;--surface2:#f6f8f5}
+#schedule .tool-head{padding:8px 4px 12px}
+#schedule .tool-head h2{font-size:clamp(32px,4.2vw,52px);line-height:1.2;letter-spacing:-.045em;margin-top:12px}
+.schedule-eyebrow{display:block;font-size:11px;font-weight:700;letter-spacing:.12em;color:#396252;margin-bottom:8px}
+.schedule-trust{margin-top:16px;color:#596960;font-size:12px}
+#schedule .workspace{border:1px solid #e1e7e3;box-shadow:0 12px 40px rgba(27,51,39,.045);border-radius:24px}
+.schedule-step{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.schedule-step>span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#e9f1eb;color:#206b58;font-size:12px;font-weight:700}
+.schedule-step small{color:#596960;margin-left:auto}
+#schedule .calendar-wrap{border-radius:16px;max-height:480px}
+#schedule .slot.selected{background:#28765f}
+#schedule .slot.selected::after{border-color:rgba(255,255,255,.5)}
+#schedule .slot:hover{background:#edf4ef}
+#schedule .slot.selected:hover{background:#20634f}
+#schedule .result-card{border:1px solid #e1e7e3;border-radius:18px;box-shadow:none;background:#fafcf9}
+#schedule .result-head strong{display:block;font-size:18px;font-weight:700}
+#schedule .btn.dark{background:#206b58;min-height:48px;padding:12px 24px}
+#schedule .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.selection-summary{font-size:13px;color:#596960;margin:8px 0 0}
+.schedule-customize{margin:16px 0;color:#526359;font-size:13px}
+.schedule-customize summary{cursor:pointer;padding:8px 0;min-height:44px}
+.schedule-customize .grid2{margin-top:10px}
+#schedule .result{background:#fff;line-height:1.9;border-radius:12px}
+.schedule-feedback{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:24px 0 0;padding-top:24px;border-top:1px solid #e1e7e3}
+.schedule-feedback>div{flex:1;min-width:200px}
+.schedule-feedback strong{font-size:14px}
+.schedule-feedback p{font-size:13px;color:#596960;margin:6px 0 0}
+.schedule-feedback a{text-decoration:none;font-size:13px;min-height:44px;display:inline-flex;align-items:center}
+.schedule-feedback small{flex-basis:100%;font-size:11px;color:#596960}
+@media(max-width:640px){#schedule .workspace{padding:16px;border-radius:20px}#schedule .result-card{padding:16px}#schedule .result-head{align-items:stretch}#schedule .result-head>div,#schedule #copySchedule{width:100%}.schedule-step small{margin-left:44px;flex-basis:100%}#schedule .calendar-wrap{max-height:390px}.schedule-feedback a{width:100%;justify-content:center}}
+body:has(#schedule.active){background:#f5f6f2}
+body:has(#schedule.active) .brand-dot{background:#206b58}
+body:has(#schedule.active) .topbar{box-shadow:0 4px 20px rgba(27,51,39,.04);border:1px solid #e1e7e3;background:rgba(255,255,255,.96)}
+@media(max-width:640px){body:has(#schedule.active) .topbar{position:static}#schedule.tool-page{padding-top:28px}}
