@@ -5,7 +5,7 @@
   let consent=false,started=false,lastPage='home';
   try{consent=localStorage.getItem(key)==='granted'}catch(e){}
   const blocked=navigator.globalPrivacyControl===true||navigator.doNotTrack==='1';
-  const allowed=new Set(['home','schedule','diff','email','businessday','transpose','dailyreport','agenda','worktime','dedupe','textbatch']);
+  const allowed=new Set(['home','schedule','schedule_intro','diff','email','businessday','transpose','dailyreport','agenda','worktime','dedupe','textbatch']);
   function start(){
     if(started||!configured||!consent||blocked)return;
     started=true;
@@ -18,12 +18,12 @@
     document.head.appendChild(script);
   }
   function track(name,params={}){
-    if(!['page_view','schedule_select','schedule_copy','copy_error'].includes(name))return;
+    if(!['page_view','schedule_select','schedule_copy','copy_error','schedule_start'].includes(name))return;
     const safe={};
     if(name==='page_view'){
       lastPage=allowed.has(params.tool)?params.tool:'home';
       safe.tool=lastPage;
-      safe.page_location=location.origin+location.pathname+(lastPage==='home'?'':'#'+lastPage);
+      safe.page_location=location.origin+location.pathname+(['home','schedule_intro'].includes(lastPage)?'':'#'+lastPage);
       safe.page_title='5秒ツール / '+lastPage;
       try{safe.page_referrer=document.referrer?new URL(document.referrer).origin:''}catch(e){safe.page_referrer=''}
     }else if([15,30].includes(params.slot_minutes))safe.slot_minutes=params.slot_minutes;
@@ -32,6 +32,11 @@
     if(configured&&consent&&!blocked){start();window.gtag('event',name,safe)}
   }
   window.fiveSecAnalytics={track};
+  const landingStart=document.getElementById('scheduleStart');
+  if(landingStart){
+    track('page_view',{tool:'schedule_intro'});
+    landingStart.addEventListener('click',()=>track('schedule_start'));
+  }
   const banner=document.getElementById('analyticsConsent');
   const settings=document.getElementById('analyticsSettings');
   if(configured&&!blocked){
